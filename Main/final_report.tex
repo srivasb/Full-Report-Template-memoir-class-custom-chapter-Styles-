@@ -42,7 +42,6 @@
 \DisemulatePackage{setspace}
 \usepackage{setspace}
 %\usepackage{titlesec}
-\usepackage{fancyhdr}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %           Colours Settings
@@ -76,18 +75,21 @@
 %         Chapters and Section Styles
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%-------------- --Default Memoir Styles ----------------
+%------- Fancy Package: check compatibility ----------
+%\usepackage{fancyhdr}
+
+% ----- STYLE OF ABSTRACT  (Check Compatibility) -----
+%\renewcommand*\abstractname{Summary}
+%\abstractintoc
+
+%------------- Default Memoir Styles -----------------
 %\chapterstyle{bianchi}
 %\chapterstyle{ger}
 %\chapterstyle{madsen}
 %\chapterstyle{ell}
 %\chapterstyle{veelo}
 
-% ----- STYLE OF ABSTRACT  (Check Compatibility) -----
-%\renewcommand*\abstractname{Summary}
-%\abstractintoc
-
-% ----------- Custom chapter: Red Box Style ------------
+% ----------- Custom chapter: Red Box Style ----------
 
 \makeatletter
 \newlength\dlf@normtxtw
@@ -169,9 +171,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %---------- Default Memoir page style -----------
+% (can be included inside the body)
 %\pagestyle{ruled}
 %\pagestyle{headings}
-%\pagestyle{companion}
 %\pagestyle{fancy}
 %\makepagestyle{fancy}
 %\makepagestyle{plain}
@@ -180,27 +182,74 @@
 %\makeevenhead{fancy}{}{}{}
 %\makeoddhead{fancy}{}{}{}
 
+
 %---------- Custom Page Style --------------
 
-\makeheadrule{headings}{\textwidth}{\normalrulethickness}
-\pagestyle{headings}
+%Example 1:
+%\makeheadrule{headings}{\textwidth}{\normalrulethickness}
+%\pagestyle{headings}
+
+%Example 2:
+%\addtopsmarks{companion}{}{
+%\createmark{chapter}{both}{shownumber}{}{. \space}}
+%\pagestyle{companion}
 
 
+%------------ Memoir Example Customisation-----------
+
+% The following code have been found in Peter Wilsons Memoir manual in chapter 7 (page127)
+ 
+\makepagestyle{YourPagestyleName} % Create a new pagestyle
+ 
+% Following code to edit the pagestyle
+\makepsmarks{YourPagestyleName}{%
+\nouppercaseheads
+ 
+% This is where we specify what \leftmark and \rightmark contains
+\createmark{chapter}{both}{shownumber}{}{\space}
+\createmark{section}{right}{shownumber}{}{\space}
+% Change "shownumber" to "nonumber" if you don't want
+%   the chapter/section number displayed at the header.
+ 
+\createplainmark{toc}{both}{\contentsname}
+\createplainmark{lof}{both}{\listfigurename}
+\createplainmark{lot}{both}{\listtablename}
+\createplainmark{bib}{both}{\bibname}
+\createplainmark{index}{both}{\indexname}
+\createplainmark{glossary}{both}{\glossaryname}}
+% Might want to keep those, see the manual for further information.
+ 
+% The following is where you tweek your header
+\makeheadrule{YourPagestyleName}{\textwidth}{\normalrulethickness}
+\makeevenhead{YourPagestyleName}{\normalfont\bfseries\thepage}{}{\normalfont Chapter \leftmark }
+\makeoddhead{YourPagestyleName}{\normalfont Chapter \rightmark}{}{\normalfont\bfseries\thepage}
+ 
+% Activate your new pagestyle
+\pagestyle{YourPagestyleName}
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%        Include Numbering in Content 
+%     Numbering in Table of Content (TOC)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\setsecheadstyle{\Large\bfseries\color{UNRed2}\UNAncizarSerif\raggedright}
-%\setsubsecheadstyle{\large\bfseries\color{UNRed2}\UNAncizarSerif\raggedright}
-%\setsubsubsecheadstyle{\bfseries\color{UNRed2}\UNAncizarSerif\raggedright}
-
+% ----------------- TOC depth --------------------
 % chapters, sections, and subsections are numbered
 \maxsecnumdepth{subsection} 
-% chapters, sections, and subsections are in the Table of Contents
+% chapters, sections, and subsections are in the TOC
 \maxtocdepth{subsection} 
+
+% Subsubsections are numbered and mark in the TOC
+\setsecnumdepth{subsubsection}
+\maxsecnumdepth{subsubsection}
+\settocdepth{subsubsection}
+\maxtocdepth{subsubsection} 
+
+%-------- Sec,SubSec and SubsubSec Colours --------
+\setsecheadstyle{\Large\bfseries\color{UNRed2}\UNAncizarSerif\raggedright}
+\setsubsecheadstyle{\large\bfseries\color{UNRed2}\UNAncizarSerif\raggedright}
+\setsubsubsecheadstyle{\bfseries\color{UNRed2}\UNAncizarSerif\raggedright}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %               Bibliography
@@ -268,7 +317,7 @@ BoldFont= *-Semibold,
 ItalicFont      = *-LightItalic,
 BoldItalicFont  = *-SemiboldItalic
 ]
-%e.g. {\UNAnciSer This text uses the CrimsonText font}
+% e.g. {\UNAncizarSerif This text uses the Ancizar Serif font}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -321,15 +370,17 @@ BoldItalicFont  = *-SemiboldItalic
 \newcommand{\more}{\textcolor{UNRed}{[MORE]}}
 \newcommand{\red}[1]{\textcolor{UNRed}{#1}}
 
-% Change this to modify look of header and footer
-\lhead{}
-\chead{}
-\rhead{}
-\lfoot{}
-\cfoot{\thepage{}}
-\rfoot{}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+% ------- Change this to modify ---------
+% ------look of header and footer -------
+% (need: fancyhrd package)
+%\lhead{}
+%\chead{}
+%\rhead{}
+%\lfoot{}
+%\cfoot{\thepage{}}
+%\rfoot{}
+%\renewcommand{\headrulewidth}{0pt}
+%\renewcommand{\footrulewidth}{0pt}
 
 
 
@@ -372,33 +423,42 @@ M.ENG. IN NUCLEAR ENGINEERING
 
 Date:\today{}     \hfill{} Project supervisor: \\
 Word count: 7,999   \hfill{} Dr Alessandro Mottura
-
+\thispagestyle{empty}
 
 % ---------------- Abstract --------------------
 
 %\newpage{}
 \chapter*{Abstact}
+%\addcontentsline{toc}{chapter}{Abstact}
+
 A summary of the scope and significance of the project, the methodology / techniques used, the results gained / outcomes generated and the conclusions obtained. Abstracts are generally a single paragraph and less than 250 words.
 
-\clearpage
+\thispagestyle{empty}
+
+
 
 % ---------------- Resumen ---------------------
-
-\chapter*{Resumen}
-Un resumen del alcance y la importancia del proyecto, la metodología / técnicas utilizadas, los resultados obtenidos / los resultados generados y las conclusiones obtenidas. Los resúmenes son generalmente de un solo párrafo y menos de 250 palabras.
 \clearpage
+\chapter*{Resumen}
+%\addcontentsline{toc}{chapter}{Resumen}
+
+Un resumen del alcance y la importancia del proyecto, la metodología / técnicas utilizadas, los resultados obtenidos / los resultados generados y las conclusiones obtenidas. Los resúmenes son generalmente de un solo párrafo y menos de 250 palabras.
+
+\thispagestyle{empty}
 
 % --------- Tables: Contents,Table & Figures --------------
+\clearpage
 \tableofcontents*
 %\listoftables          % required if there are tables
 %\listoffigures         % required if there are figures
-\newpage{}
+\thispagestyle{empty}
 
 
 %-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
 %               Beginning of Chapters
 %-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%
-
+\clearpage
+\pagenumbering{arabic} 
 \singlespacing
 %\onehalfspacing
 
@@ -414,6 +474,10 @@ An introduction to the project -- your aims and objectives should go here. You c
 \subsection{First Subsec}
 
 {\UNAncizarSerif This text is in AncisarSerif}
+
+
+\subsubsection{First Subsubsec}
+
 
 \chapter{Literature review}
 This should demonstrate a sound understanding of the current state of knowledge in the field, which should critically assess previous and current work in the public domain, drawing out the major facts, views, trends etc. (not just listing a series of literature / information sources and/or literature/ information abstracts). 
